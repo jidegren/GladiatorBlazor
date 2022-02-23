@@ -1,0 +1,27 @@
+﻿
+<div class="game-container" tabindex="0" @onclick="_gameManager.StartGame">
+
+    <h1>Gamecontainer</h1>
+    <div class="round">
+    </div>
+
+
+</div>
+
+@code {
+    GameManager _gameManager;
+
+
+
+    protected override void OnInitialized()
+    {
+        _gameManager = new GameManager();
+        _gameManager.MainLoopCompleted += (o, e) => StateHasChanged();
+    }
+
+    void StartRound(KeyboardEventArgs e)
+    {
+        if (e.Key == " ")
+            _gameManager.StartGame();
+    }
+}

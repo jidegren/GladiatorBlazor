@@ -42,12 +42,12 @@
           "dependencies": {
             "Microsoft.AspNetCore.Components.WebAssembly": {
               "target": "Package",
-              "version": "[5.0.8, )"
+              "version": "[6.0.2, )"
             },
             "Microsoft.AspNetCore.Components.WebAssembly.DevServer": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[5.0.8, )"
+              "version": "[6.0.2, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -71,7 +71,7 @@
             },
             "System.Net.Http.Json": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[6.0.0, )"
             }
           },
           "imports": [

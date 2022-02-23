@@ -14,10 +14,10 @@
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)microsoft.entityframeworkcore.design\6.0.2\build\net6.0\Microsoft.EntityFrameworkCore.Design.props" Condition="Exists('$(NuGetPackageRoot)microsoft.entityframeworkcore.design\6.0.2\build\net6.0\Microsoft.EntityFrameworkCore.Design.props')" />
-    <Import Project="$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly\5.0.8\build\net5.0\Microsoft.AspNetCore.Components.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly\5.0.8\build\net5.0\Microsoft.AspNetCore.Components.WebAssembly.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly\6.0.2\build\net6.0\Microsoft.AspNetCore.Components.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)microsoft.aspnetcore.components.webassembly\6.0.2\build\net6.0\Microsoft.AspNetCore.Components.WebAssembly.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\robin\.nuget\packages\microsoft.entityframeworkcore.tools\6.0.2</PkgMicrosoft_EntityFrameworkCore_Tools>
-    <PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer Condition=" '$(PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer)' == '' ">C:\Users\robin\.nuget\packages\microsoft.aspnetcore.components.webassembly.devserver\5.0.8</PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer>
+    <PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer Condition=" '$(PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer)' == '' ">C:\Users\robin\.nuget\packages\microsoft.aspnetcore.components.webassembly.devserver\6.0.2</PkgMicrosoft_AspNetCore_Components_WebAssembly_DevServer>
   </PropertyGroup>
 </Project>

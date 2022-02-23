@@ -22,6 +22,14 @@ build_property._RazorSourceGeneratorDebug =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/robin/source/repos/GladiatorBlazor/GladiatorBlazor/Components/GameContainer.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHYW1lQ29udGFpbmVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/robin/source/repos/GladiatorBlazor/GladiatorBlazor/Components/Round.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3VuZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/robin/source/repos/GladiatorBlazor/GladiatorBlazor/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
