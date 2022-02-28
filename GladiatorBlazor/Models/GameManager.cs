@@ -24,7 +24,6 @@ namespace GladiatorBlazor.Models
             while (IsRunning)
             {
                 Round();
-                Surrender(_gladiator, _monster);
 
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
                 await Task.Delay(20);
@@ -38,7 +37,7 @@ namespace GladiatorBlazor.Models
             if (!IsRunning)
             {
                 _gladiator = new Gladiator("Forsete", 100, 100, 20);
-                _monster = new Monster("Troll", 50, 50, 21);
+                _monster = new Monster("Troll", 100, 100, 21);
                 MainLoop(_gladiator, _monster);
             }
         }
@@ -49,27 +48,40 @@ namespace GladiatorBlazor.Models
             var gladiatorDamage = Attack(_gladiator, _monster);
             var monsterDamage = Attack(_monster, _gladiator);
 
-                string roundInfo = $"{_gladiator.Name} darrar på läppen och ser vettskrämd ut när {_monster.Name} initierar striden." +
-                $"{_monster.Name} gör sig nu redo för närstrid." +
-                $"{_monster.Name} frustar till och löper fram mot {_gladiator.Name}. {_monster.Name} svingar Fullmånespjut mot {_gladiator.Name} som blir skadad {monsterDamage}." +
-                $"{_gladiator.Name} börjar göra sig redo för en attack. {_gladiator.Name} utnyttjar att {_monster.Name} bländas av solen, backar undan " +
-                $" {_gladiator.Name} gör sig nu redo för närstrid. {_gladiator.Name} svingar Fullmånespjut mot {_monster.Name} som blir skadad {gladiatorDamage}.";
+            if (IsRunning)
+            {
+                string monsterAttack = $"{_gladiator.Name} darrar på läppen och ser vettskrämd ut när {_monster.Name} initierar striden." +
+            $"{_monster.Name} gör sig nu redo för närstrid." +
+            $"{_monster.Name} frustar till och löper fram mot {_gladiator.Name}. {_monster.Name} svingar Fullmånespjut mot {_gladiator.Name} som blir skadad {monsterDamage}.";
+                _gladiator.Health -= monsterDamage;
+                Rounds.Add(monsterAttack);
+                Surrender(_monster, _gladiator);
+            }
+            
 
-            _monster.Health -= gladiatorDamage;
-            _gladiator.Health -= monsterDamage;
+            if (IsRunning)
+            {
+                string gladiatorAttack = $"{_gladiator.Name} börjar göra sig redo för en attack. {_gladiator.Name} utnyttjar att {_monster.Name} bländas av solen, backar undan " +
+            $" {_gladiator.Name} gör sig nu redo för närstrid. {_gladiator.Name} svingar Fullmånespjut mot {_monster.Name} som blir skadad {gladiatorDamage}.";
 
-            Rounds.Add(roundInfo);
+                _monster.Health -= gladiatorDamage;
+                Rounds.Add(gladiatorAttack);
+                Surrender(_gladiator, _monster);
+            }
         }
 
         public double Attack(Character attacker, Character defender)
         {
             
+
             defender.SuccessEvasion = false; //TODO : make this a check, now all attacks hits.
 
             double totalDamage;
             if (!defender.SuccessEvasion)
             {
-                totalDamage = (attacker.Strength * 0.2); //+ attacker.Weapon.Damage;
+                var rnd = new Random();
+                double randomAttackDmg = rnd.Next(1, 20);
+                totalDamage = (attacker.Strength * 0.2) + randomAttackDmg; //+ attacker.Weapon.Damage;
             }
             else
             {
