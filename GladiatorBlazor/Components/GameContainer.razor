@@ -2,7 +2,11 @@
 <div class="game-container" tabindex="0" @onclick="_gameManager.StartGame">
 
     <h1>Gamecontainer</h1>
-    <div class="round">
+    <div class="match">
+        @foreach (var round in _gameManager.Rounds)
+        {
+            <p>@round</p>
+        }
     </div>
 
 

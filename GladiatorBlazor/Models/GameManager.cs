@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GladiatorBlazor.Models
@@ -10,7 +11,8 @@ namespace GladiatorBlazor.Models
         public event EventHandler MainLoopCompleted;
         public Gladiator _gladiator;
         public Monster _monster;
-        
+        public List<string> Rounds { get; set; } = new List<string>();
+
 
         public async void MainLoop(Gladiator gladiator, Monster monster)
         {
@@ -18,7 +20,7 @@ namespace GladiatorBlazor.Models
             _monster = monster;
 
             IsRunning = true;
-
+            Rounds.Add("Match Starting");
             while (IsRunning)
             {
                 Round();
@@ -52,6 +54,11 @@ namespace GladiatorBlazor.Models
                 $"{_monster.Name} frustar till och löper fram mot {_gladiator.Name}. {_monster.Name} svingar Fullmånespjut mot {_gladiator.Name} som blir skadad {monsterDamage}." +
                 $"{_gladiator.Name} börjar göra sig redo för en attack. {_gladiator.Name} utnyttjar att {_monster.Name} bländas av solen, backar undan " +
                 $" {_gladiator.Name} gör sig nu redo för närstrid. {_gladiator.Name} svingar Fullmånespjut mot {_monster.Name} som blir skadad {gladiatorDamage}.";
+
+            _monster.Health -= gladiatorDamage;
+            _gladiator.Health -= monsterDamage;
+
+            Rounds.Add(roundInfo);
         }
 
         public double Attack(Character attacker, Character defender)
@@ -62,7 +69,7 @@ namespace GladiatorBlazor.Models
             double totalDamage;
             if (!defender.SuccessEvasion)
             {
-                totalDamage = (attacker.Strength * 0.2) + attacker.Weapon.Damage;
+                totalDamage = (attacker.Strength * 0.2); //+ attacker.Weapon.Damage;
             }
             else
             {
@@ -78,18 +85,20 @@ namespace GladiatorBlazor.Models
 
         public void Surrender(Character attacker, Character defender)
         {
-            var gameManager = new GameManager();
+            
 
             if (attacker is Gladiator)
             {
                 if (_monster.Health <= 0) //TODO gör så man kan ställa in taktik
                 {
-                    gameManager.WinGame();
+                    Rounds.Add("The Gladiator has won the match!! The monster cant take more damage and falls down to the ground.");
+                    WinGame();
                 }
 
-                if (_gladiator.Endurance <= gameManager.RoundCount)
+                if (_gladiator.Endurance <= RoundCount)
                 {
-                    gameManager.GameOver();
+                    Rounds.Add("The gladiator is to tired to continue fighting so he falls to the ground and loses the match");
+                    GameOver();
                 }
             }
 
@@ -97,12 +106,14 @@ namespace GladiatorBlazor.Models
             {
                 if (_gladiator.Health <= 0) //TODO gör så man kan ställa in taktik
                 {
-                    gameManager.WinGame();
+                    Rounds.Add("The Monster has won the match!! The Gladiator cant take more damage and falls down to the ground.");
+                    WinGame();
                 }
 
-                if (_monster.Endurance <= gameManager.RoundCount)
+                if (_monster.Endurance <= RoundCount)
                 {
-                    gameManager.GameOver();
+                    Rounds.Add("The Monster is to tired to continue fighting so he falls to the ground and loses the match");
+                    GameOver();
                 }
             }
 
