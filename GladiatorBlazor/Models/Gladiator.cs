@@ -6,12 +6,13 @@
         {
 
         }
-        public Gladiator(string name, double health, double strength, double endurance )
+        public Gladiator(string name, double health, double strength, double endurance, double iniative )
         {
             Name = name;
             Health = health;
             Strength = strength;
             Endurance = endurance;
+            Initiative = iniative;
         }
 
     }
