@@ -7,11 +7,13 @@ namespace GladiatorBlazor.Models
     public class GameManager
     {
         public bool IsRunning { get; set; } = false;
-        public int RoundCount { get; set; }
+        
         public event EventHandler MainLoopCompleted;
         public Gladiator _gladiator;
         public Monster _monster;
-        public List<string> Rounds { get; set; } = new List<string>();
+        public int _roundCount = 0;
+
+        public List<string> RoundDescriptions { get; set; } = new List<string>();
 
 
         public async void MainLoop(Gladiator gladiator, Monster monster)
@@ -20,7 +22,8 @@ namespace GladiatorBlazor.Models
             _monster = monster;
 
             IsRunning = true;
-            Rounds.Add("Match Starting");
+            RoundDescriptions.Clear();
+            RoundDescriptions.Add("Match Starting");
             while (IsRunning)
             {
                 Round();
@@ -28,7 +31,7 @@ namespace GladiatorBlazor.Models
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
                 await Task.Delay(20);
 
-                //TODO skicka in rätt attacker/defender i attackklassen
+                
             }
         }
 
@@ -36,8 +39,8 @@ namespace GladiatorBlazor.Models
         {
             if (!IsRunning)
             {
-                _gladiator = new Gladiator("Forsete", 100, 100, 20, 20);
-                _monster = new Monster("Troll", 100, 100, 21, 15);
+                _gladiator = new Gladiator("Forsete", 100, 100, 10, 20);
+                _monster = new Monster("Troll", 100, 100, 20, 10);
                 MainLoop(_gladiator, _monster);
             }
         }
@@ -49,12 +52,16 @@ namespace GladiatorBlazor.Models
             var monsterDamage = Attack(_monster, _gladiator);
             var gladiatorIniCheck = CheckIni(_gladiator, _monster);
 
-            //TODO göra så att samma spelare inte startar varje runda
+
+            //TODO Refakturera så att man inte upprepar sig med iniative och vem som startar
             //TODO Lägga till undvika
             //TODO Skapa olika rundor så det inte alltid är samma text
-            //TODO Ini ska beräknas med en randomsiffra liknande det som sker i attack
+            //TODO Uthållighet och antal rundor
 
-            
+
+            _roundCount++;
+            CheckEndurance(_gladiator, _monster);
+
             if (gladiatorIniCheck)
             {
                 if (IsRunning)
@@ -62,7 +69,7 @@ namespace GladiatorBlazor.Models
                     string gladiatorAttack = $"{_gladiator.Name} börjar göra sig redo för en attack. {_gladiator.Name} utnyttjar att {_monster.Name} bländas av solen, backar undan " +
                     $" {_gladiator.Name} gör sig nu redo för närstrid. {_gladiator.Name} svingar Bastardsvärd mot {_monster.Name} som blir skadad {gladiatorDamage}.";
                     _monster.Health -= gladiatorDamage;
-                    Rounds.Add(gladiatorAttack);
+                    RoundDescriptions.Add(gladiatorAttack);
                     Surrender(_gladiator, _monster);
                 }
 
@@ -72,8 +79,9 @@ namespace GladiatorBlazor.Models
                     $"{_monster.Name} gör sig nu redo för närstrid." +
                     $"{_monster.Name} svingar Trollhammare mot {_gladiator.Name} som blir skadad {monsterDamage}.";
                     _gladiator.Health -= monsterDamage;
-                    Rounds.Add(monsterAttack);
+                    RoundDescriptions.Add(monsterAttack);
                     Surrender(_monster, _gladiator);
+                    
                 }
             }
             else
@@ -84,7 +92,7 @@ namespace GladiatorBlazor.Models
                     $"{_monster.Name} gör sig nu redo för närstrid." +
                     $"{_monster.Name} svingar Trollhammare mot {_gladiator.Name} som blir skadad {monsterDamage}.";
                     _gladiator.Health -= monsterDamage;
-                    Rounds.Add(monsterAttack);
+                    RoundDescriptions.Add(monsterAttack);
                     Surrender(_monster, _gladiator);
                 }
 
@@ -93,11 +101,33 @@ namespace GladiatorBlazor.Models
                     string gladiatorAttack = $"{_gladiator.Name} börjar göra sig redo för en attack. {_gladiator.Name} utnyttjar att {_monster.Name} bländas av solen, backar undan " +
                     $" {_gladiator.Name} gör sig nu redo för närstrid. {_gladiator.Name} svingar Bastardsvärd mot {_monster.Name} som blir skadad {gladiatorDamage}.";
                     _monster.Health -= gladiatorDamage;
-                    Rounds.Add(gladiatorAttack);
+                    RoundDescriptions.Add(gladiatorAttack);
                     Surrender(_gladiator, _monster);
+                    
                 }
             }
             
+        }
+
+        public void CheckEndurance(Character gladiator, Character monster)
+        {
+            double enduranceBalance = 0.2;
+            var gladiatorEndurance = gladiator.Endurance * enduranceBalance;
+            var monsterEndurance = monster.Endurance * enduranceBalance;
+
+            if (_roundCount > monsterEndurance)
+            {
+                RoundDescriptions.Add($"{_monster.Name} är för trött för att fortsätta slåss och faller ner till marken.");
+                RoundDescriptions.Add($"{_gladiator.Name} vinner striden!!!");
+                GameOver();
+            }
+
+            if (_roundCount > gladiatorEndurance)
+            {
+                RoundDescriptions.Add($"{_gladiator.Name} är för trött för att fortsätta slåss och faller ner till marken.");
+                RoundDescriptions.Add($"{_monster.Name} vinner striden!!!");
+                GameOver();
+            }
         }
         public bool CheckIni(Character gladiator, Character monster)
         {
@@ -152,14 +182,8 @@ namespace GladiatorBlazor.Models
             {
                 if (_monster.Health <= 0) //TODO gör så man kan ställa in taktik
                 {
-                    Rounds.Add("The Gladiator has won the match!! The monster cant take more damage and falls down to the ground.");
+                    RoundDescriptions.Add($"{_gladiator.Name} has won the match!! {_monster.Name} cant take more damage and falls down to the ground.");
                     WinGame();
-                }
-
-                if (_gladiator.Endurance <= RoundCount)
-                {
-                    Rounds.Add("The gladiator is to tired to continue fighting so he falls to the ground and loses the match");
-                    GameOver();
                 }
             }
 
@@ -167,14 +191,8 @@ namespace GladiatorBlazor.Models
             {
                 if (_gladiator.Health <= 0) //TODO gör så man kan ställa in taktik
                 {
-                    Rounds.Add("The Monster has won the match!! The Gladiator cant take more damage and falls down to the ground.");
+                    RoundDescriptions.Add($"{_monster.Name} has won the match!! {_gladiator.Name} cant take more damage and falls down to the ground.");
                     WinGame();
-                }
-
-                if (_monster.Endurance <= RoundCount)
-                {
-                    Rounds.Add("The Monster is to tired to continue fighting so he falls to the ground and loses the match");
-                    GameOver();
                 }
             }
 
@@ -183,10 +201,14 @@ namespace GladiatorBlazor.Models
         public void WinGame()
         {
             IsRunning = false;
+            _roundCount = 0;
+            
         }
         public void GameOver()
         {
             IsRunning = false;
+            _roundCount = 0;
+           
         }
 
     }

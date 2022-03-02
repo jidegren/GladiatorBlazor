@@ -1,9 +1,9 @@
 ﻿
 <div class="game-container" tabindex="0" @onclick="_gameManager.StartGame">
 
-    <h1>Gamecontainer</h1>
+    <h1>Start Fight</h1>
     <div class="match">
-        @foreach (var round in _gameManager.Rounds)
+        @foreach (var round in _gameManager.RoundDescriptions)
         {
             <p>@round</p>
         }
