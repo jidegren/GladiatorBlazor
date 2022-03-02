@@ -27,11 +27,8 @@ namespace GladiatorBlazor.Models
             while (IsRunning)
             {
                 Round();
-
                 MainLoopCompleted?.Invoke(this, EventArgs.Empty);
                 await Task.Delay(20);
-
-                
             }
         }
 
@@ -39,32 +36,31 @@ namespace GladiatorBlazor.Models
         {
             if (!IsRunning)
             {
-                _gladiator = new Gladiator("Forsete", 100, 100, 10, 20);
-                _monster = new Monster("Troll", 100, 100, 20, 10);
+                _gladiator = new Gladiator("Forsete", 100, 100, 10, 20, 50, 100);
+                _monster = new Monster("Troll", 100, 100, 20, 10, 20, 50);
                 MainLoop(_gladiator, _monster);
             }
         }
 
         public void Round()
         {
-            //TODO ska inte vara hårdkodat
             var gladiatorDamage = Attack(_gladiator, _monster);
             var monsterDamage = Attack(_monster, _gladiator);
             var gladiatorIniCheck = CheckIni(_gladiator, _monster);
-
+            var successEvasionGladiator = CheckEvasion(_gladiator, _monster);
+            var successEvasionMonster = CheckEvasion(_monster, _gladiator);
+            CheckEndurance(_gladiator, _monster);
+            _roundCount++;
 
             //TODO Refakturera så att man inte upprepar sig med iniative och vem som startar
             //TODO Lägga till undvika
             //TODO Skapa olika rundor så det inte alltid är samma text
-            //TODO Uthållighet och antal rundor
-
-
-            _roundCount++;
-            CheckEndurance(_gladiator, _monster);
+            //TODO måste fixa så det inte blir 2 undvikningar efter att mathcen är slut. Just nu går ju ifsatsen igenom med att man inte undviker så matchen fortsätter
+            //TODO ta bort IsRunning från ifsatsen nedan, man kollar det i mainloopen. Kan finnas på fler ställen.
 
             if (gladiatorIniCheck)
             {
-                if (IsRunning)
+                if (IsRunning && !successEvasionMonster)
                 {
                     string gladiatorAttack = $"{_gladiator.Name} börjar göra sig redo för en attack. {_gladiator.Name} utnyttjar att {_monster.Name} bländas av solen, backar undan " +
                     $" {_gladiator.Name} gör sig nu redo för närstrid. {_gladiator.Name} svingar Bastardsvärd mot {_monster.Name} som blir skadad {gladiatorDamage}.";
@@ -72,8 +68,13 @@ namespace GladiatorBlazor.Models
                     RoundDescriptions.Add(gladiatorAttack);
                     Surrender(_gladiator, _monster);
                 }
+                else if (IsRunning)
+                {
+                    RoundDescriptions.Add($"{_monster.Name} undvek attacken");
+                    Surrender(_gladiator, _monster);
+                }
 
-                if (IsRunning)
+                if (IsRunning && !successEvasionGladiator)
                 {
                     string monsterAttack = $"{_monster.Name} vrålar och rusar mot {_gladiator.Name} som darrar på läppen och ser vettskrämd ut när {_monster.Name} initierar striden." +
                     $"{_monster.Name} gör sig nu redo för närstrid." +
@@ -81,12 +82,16 @@ namespace GladiatorBlazor.Models
                     _gladiator.Health -= monsterDamage;
                     RoundDescriptions.Add(monsterAttack);
                     Surrender(_monster, _gladiator);
-                    
+                }
+                else if (IsRunning)
+                {
+                    RoundDescriptions.Add($"{_gladiator.Name} undvek attacken");
+                    Surrender(_monster, _gladiator);
                 }
             }
             else
             {
-                if (IsRunning)
+                if (IsRunning && !successEvasionGladiator)
                 {
                     string monsterAttack = $"{_monster.Name} vrålar och rusar mot {_gladiator.Name} som darrar på läppen och ser vettskrämd ut när {_monster.Name} initierar striden." +
                     $"{_monster.Name} gör sig nu redo för närstrid." +
@@ -95,15 +100,24 @@ namespace GladiatorBlazor.Models
                     RoundDescriptions.Add(monsterAttack);
                     Surrender(_monster, _gladiator);
                 }
+                else if (IsRunning)
+                {
+                    RoundDescriptions.Add($"{_gladiator.Name} undvek attacken");
+                    Surrender(_monster, _gladiator);
+                }
 
-                if (IsRunning)
+                if (IsRunning && !successEvasionMonster)
                 {
                     string gladiatorAttack = $"{_gladiator.Name} börjar göra sig redo för en attack. {_gladiator.Name} utnyttjar att {_monster.Name} bländas av solen, backar undan " +
                     $" {_gladiator.Name} gör sig nu redo för närstrid. {_gladiator.Name} svingar Bastardsvärd mot {_monster.Name} som blir skadad {gladiatorDamage}.";
                     _monster.Health -= gladiatorDamage;
                     RoundDescriptions.Add(gladiatorAttack);
                     Surrender(_gladiator, _monster);
-                    
+                }
+                else if (IsRunning)
+                {
+                    RoundDescriptions.Add($"{_monster.Name} undvek attacken");
+                    Surrender(_gladiator, _monster);
                 }
             }
             
@@ -169,9 +183,21 @@ namespace GladiatorBlazor.Models
 
             return totalDamage;
         }
-        public void Avoid(Character attacker, Character defender)
+        //TODO kolla formel för UA
+        public bool CheckEvasion(Character attacker, Character defender)
         {
+            var rnd = new Random();
+            double randomEvasion = rnd.Next(1, 20);
+            var successEvasion = defender.Evasion + randomEvasion;
 
+            if (attacker.WeaponSkill < successEvasion)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public void Surrender(Character attacker, Character defender)
