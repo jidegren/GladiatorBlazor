@@ -54,7 +54,6 @@ namespace GladiatorBlazor.Models
 
             //TODO vapnen är hårdkodade in i texten nu.
             //TODO Refaktorera så att man inte upprepar sig med iniative och vem som startar
-            //TODO Refaktorera svenska/engelska
             //TODO Skapa olika rundor så det inte alltid är samma text
             //TODO ta bort IsRunning från ifsatsen nedan, man kollar det i mainloopen. Kan finnas på fler ställen.
 
@@ -62,8 +61,8 @@ namespace GladiatorBlazor.Models
             {
                 if (IsRunning && !successEvasionMonster)
                 {
-                    string gladiatorAttack = $"{_gladiator.Name} is getting ready for a fight. {_gladiator.Name} use the moment of {_monster.Name} getting the sun in the eyes" +
-                    $" {_gladiator.Name} is ready for closecombat. {_gladiator.Name} swings his longsword against {_monster.Name} and he takes {gladiatorDamage} damage.";
+                    string gladiatorAttack = $"{_gladiator.Name} is getting ready for a fight. {_gladiator.Name} uses the moment when {_monster.Name} is getting the sun in the eyes" +
+                    $" {_gladiator.Name} is ready for closecombat. {_gladiator.Name} swings his longsword against {_monster.Name} and {_monster.Name} takes {gladiatorDamage} damage.";
                     _monster.Health -= gladiatorDamage;
                     RoundDescriptions.Add(gladiatorAttack);
                     Surrender(_gladiator, _monster);
@@ -78,7 +77,7 @@ namespace GladiatorBlazor.Models
                 {
                     string monsterAttack = $"{_monster.Name} roars and runs against {_gladiator.Name} is shaking and looking terrified when {_monster.Name} starts the combat." +
                     $"{_monster.Name} is ready for closecombat." +
-                    $"{_monster.Name} swings his trollhammer against {_gladiator.Name} and he takes {monsterDamage} damage.";
+                    $"{_monster.Name} swings his trollhammer against {_gladiator.Name} and {_gladiator.Name} takes {monsterDamage} damage.";
                     _gladiator.Health -= monsterDamage;
                     RoundDescriptions.Add(monsterAttack);
                     Surrender(_monster, _gladiator);
@@ -95,7 +94,7 @@ namespace GladiatorBlazor.Models
                 {
                     string monsterAttack = $"{_monster.Name} roars and runs against {_gladiator.Name} is shaking and looking terrified when {_monster.Name} starts the combat." +
                     $"{_monster.Name} is ready for closecombat." +
-                    $"{_monster.Name} swings his trollhammer against {_gladiator.Name} and he takes {monsterDamage} damage.";
+                    $"{_monster.Name} swings his trollhammer against {_gladiator.Name} and {_gladiator.Name} takes {monsterDamage} damage.";
                     _gladiator.Health -= monsterDamage;
                     RoundDescriptions.Add(monsterAttack);
                     Surrender(_monster, _gladiator);
@@ -108,8 +107,8 @@ namespace GladiatorBlazor.Models
 
                 if (IsRunning && !successEvasionMonster)
                 {
-                    string gladiatorAttack = $"{_gladiator.Name} is getting ready for a fight. {_gladiator.Name} use the moment of {_monster.Name} getting the sun in the eyes " +
-                    $" {_gladiator.Name} is ready for closecombat. {_gladiator.Name} swings his longsword against {_monster.Name} and he takes {gladiatorDamage} damage.";
+                    string gladiatorAttack = $"{_gladiator.Name} is getting ready for a fight. {_gladiator.Name} uses the moment when {_monster.Name} is getting the sun in the eyes " +
+                    $" {_gladiator.Name} is ready for closecombat. {_gladiator.Name} swings his longsword against {_monster.Name} and {_monster.Name} takes {gladiatorDamage} damage.";
                     _monster.Health -= gladiatorDamage;
                     RoundDescriptions.Add(gladiatorAttack);
                     Surrender(_gladiator, _monster);
